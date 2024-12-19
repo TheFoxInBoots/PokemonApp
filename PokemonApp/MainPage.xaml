@@ -5,11 +5,11 @@
              xmlns:vm="clr-namespace:PokemonApp.ViewModels"
              x:Class="PokemonApp.MainPage"
              Title=""
-             BackgroundColor="#306db4">
+             BackgroundColor="{StaticResource PrimB}">
 
     <Grid RowDefinitions="Auto, *"
           ColumnDefinitions="125, *"
-            Padding="30,0">
+          Padding="30,0">
 
         <Image Source="Resources/Images/poke_start.png" 
                Grid.ColumnSpan="2"
@@ -21,13 +21,11 @@
                WidthRequest="398"
                Margin="5, 180, 0, 0"
                Padding="5"
-               BackgroundColor="#306db4"
-               BorderColor="#306db4">
+               BackgroundColor="{StaticResource PrimB}"
+               BorderColor="{StaticResource PrimB}">
             <Frame.GestureRecognizers>
-                <TapGestureRecognizer Command="{ Binding Source={ RelativeSource AncestorType={x:Type vm:MainViewModel}}, Path=GotoGameCommand }"
-                                      CommandParameter="{ Binding . }"/>
+                <TapGestureRecognizer Command="{ Binding GotoGameCommand }" CommandParameter="{Binding .}"/>
             </Frame.GestureRecognizers>
-        </Frame>       
+        </Frame>
     </Grid>
-
 </ContentPage>

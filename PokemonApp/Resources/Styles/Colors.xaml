@@ -5,10 +5,14 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
 
     <!-- PokeColors -->
-    
-    <SolidColorBrush x:Key="PokeBlue" Color="#306db4" />
-    <SolidColorBrush x:Key="PokeRed" Color="#eb2e23" />
-    <SolidColorBrush x:Key="PokeYellow" Color="#ffcb05" />
+
+    <Color x:Key="PrimB">#306db4</Color>
+    <Color x:Key="PrimR">#eb2e23</Color>
+    <Color x:Key="PrimY">#ffcb05</Color>
+
+    <SolidColorBrush x:Key="PokeBlue" Color="{ StaticResource PrimB }" />
+    <SolidColorBrush x:Key="PokeRed" Color="{ StaticResource PrimR }" />
+    <SolidColorBrush x:Key="PokeYellow" Color="{ StaticResource PrimY }" />
 
 
     <!-- Note: For Android please see also Platforms\Android\Resources\values\colors.xml -->

@@ -24,8 +24,9 @@ namespace PokemonApp
             builder.Services.AddTransient<GameViewModel>();
 
             builder.Services.AddSingleton<PokemonService>();
+            builder.Services.AddSingleton<GameService>();
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

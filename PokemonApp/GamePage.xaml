@@ -3,22 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:PokemonApp.Models"
              xmlns:vm="clr-namespace:PokemonApp.ViewModels"
+             xmlns:converters="clr-namespace:PokemonApp.Converters"
              x:DataType="vm:GameViewModel"
              x:Class="PokemonApp.ViewModels.GamePage"
              Title="{ Binding Title }" 
-             BackgroundColor="#306db4" >
+             BackgroundColor="{ StaticResource PrimB }" >
 
-    <Grid RowDefinitions="Auto,*">        
-        <BoxView Grid.Row="0" 
-                 Color="Black" 
-                 HeightRequest="66"/>
-        <HorizontalStackLayout Grid.Row="0" 
-                               HeightRequest="65"
-                               Padding="0, 20, 20, 0" 
-                               HorizontalOptions="End" >
-            <Label Text="Score:  " FontSize="Medium" TextColor="White" FontAttributes="Bold"/>
-            <Label Text="{ Binding Score }" FontSize="Medium" TextColor="Orange" FontAttributes="Bold" />
-        </HorizontalStackLayout>
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <BoxView Grid.Row="0" Color="Black" HeightRequest="66"/>
+        <Grid Grid.Row="0" ColumnDefinitions="90,*,70" Padding="0, 0, 25, 0" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+            <!-- Pokébollar -->
+            <HorizontalStackLayout Grid.Column="0" VerticalOptions="Center" HorizontalOptions="Start" Margin="20, 0, 0, 0">
+                <Image Source="Resources/Images/pokeball.png" HeightRequest="25" IsVisible="{Binding RemainingTries, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='1'}" Margin="0, 0, 0, 0" />
+                <Image Source="Resources/Images/pokeball.png" HeightRequest="25" IsVisible="{Binding RemainingTries, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='2'}" Margin="10, 0, 0, 0" />
+                <Image Source="Resources/Images/pokeball.png" HeightRequest="25" IsVisible="{Binding RemainingTries, Converter={StaticResource IntToVisibilityConverter}, ConverterParameter='3'}" Margin="10, 0, 0, 0" />
+            </HorizontalStackLayout>
+            <!-- Status Meddelande -->
+            <HorizontalStackLayout Grid.Column="1" VerticalOptions="Center" HorizontalOptions="Center">
+                <Frame CornerRadius="10" Padding="0" BorderColor="Transparent" BackgroundColor="Orange" HasShadow="False" IsVisible="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}">
+                    <Label Text="{Binding StatusMessage}" 
+                           FontSize="Subtitle" 
+                           FontAttributes="Bold" 
+                           TextTransform="Uppercase"
+                           TextColor="Black" 
+                           HorizontalOptions="Center" 
+                           VerticalOptions="Center" 
+                           IsVisible="{Binding StatusMessage, Converter={StaticResource StringToVisibilityConverter}}" 
+                           Padding="10" />
+                </Frame>
+            </HorizontalStackLayout>
+            <!-- Score Labels -->
+            <HorizontalStackLayout Grid.Column="2" VerticalOptions="Center" HorizontalOptions="End">
+                <Label FontSize="Medium" TextColor="White" FontAttributes="Bold" Text="Score:  " />
+                <Label FontSize="Medium" TextColor="Orange" FontAttributes="Bold" Text="{Binding Score}" />
+            </HorizontalStackLayout>
+        </Grid>
 
         <VerticalStackLayout Grid.Row="1">
             <Grid>
@@ -27,14 +47,15 @@
                        Margin="0, -10, 0, 0"/>
 
                 <Image Source="{ Binding DisplayedPokemon.SpriteUrl }" 
-                       Margin="-160, -30, 0, 0"
+                       Margin="-165, -30, 0, 0"
                        HeightRequest="225" 
                        ZIndex="10" />
             </Grid>
+            <!-- Knappar -->
             <CollectionView ItemsSource="{Binding ButtonStates}"
                             Margin="0, 30, 0, 0">
                 <CollectionView.ItemTemplate>
-                    <DataTemplate x:DataType="vm:ButtonState">
+                    <DataTemplate x:DataType="models:ButtonState">
                         <Button Text="{Binding Name}" 
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:GameViewModel}}, Path=GuessCommand}" 
                                 CommandParameter="{Binding Name}"

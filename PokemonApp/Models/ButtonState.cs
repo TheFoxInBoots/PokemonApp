@@ -1,6 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 
-namespace PokemonApp.ViewModels
+namespace PokemonApp.Models
 {
     public partial class ButtonState : ObservableObject
     {
@@ -8,7 +8,7 @@ namespace PokemonApp.ViewModels
         string name;
 
         [ObservableProperty]
-        string color = "#ffcb05";
+        string color;
 
         [ObservableProperty]
         bool isEnabled;

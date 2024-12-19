@@ -8,81 +8,56 @@ namespace PokemonApp.ViewModels
 {
     public partial class GameViewModel : BaseViewModel
     {
-        private readonly PokemonService pokemonService;
-        private int tries;
-        private Pokemon correctPokemon;
-        private bool gameActive;
+        private readonly GameService gameService;
 
         [ObservableProperty]
-        ObservableCollection<Pokemon> pokemons = new ObservableCollection<Pokemon>();
+        private Pokemon displayedPokemon;
 
         [ObservableProperty]
-        Pokemon displayedPokemon;
+        private int score;
 
         [ObservableProperty]
-        ObservableCollection<ButtonState> buttonStates = new ObservableCollection<ButtonState>();
+        private string statusMessage;
 
         [ObservableProperty]
-        int score = 0;
-
-        public GameViewModel(PokemonService pokemonService)
+        private int remainingTries;
+               
+        public GameViewModel(GameService gameService)
         {
-            this.pokemonService = pokemonService;
-            _ = LoadPokemons(); // Load Pokemons when the view model is initialized
+            this.gameService = gameService;
+            _ = LoadPokemons(); 
         }
+        public ObservableCollection<ButtonState> ButtonStates => gameService.ButtonStates;
 
         [RelayCommand]
         public async Task LoadPokemons()
         {
-            Pokemons.Clear();
-            var pokemonList = await pokemonService.GetRandomPokemons();
-            foreach (var pokemon in pokemonList)
-            {
-                Pokemons.Add(pokemon);
-            }
-
-            // Select a random Pokémon to display
-            correctPokemon = pokemonList[new Random().Next(pokemonList.Count)];
-            DisplayedPokemon = correctPokemon;
-
-            // Initialize button states
-            ButtonStates.Clear();
-            foreach (var pokemon in pokemonList)
-            {
-                ButtonStates.Add(new ButtonState { Name = pokemon.Name, Color = "#ffcb05" });
-            }
-
-            tries = 0;
-            gameActive = true;
+            await gameService.InitializeGameAsync();
+            DisplayedPokemon = gameService.CorrectPokemon;
+            StatusMessage = string.Empty; 
+            RemainingTries = 3;            
         }
-
+        
         [RelayCommand]
         public void Guess(string guessedName)
         {
-            if (!gameActive) return;
-            var index = ButtonStates.Select(p => p.Name).ToList().IndexOf(guessedName);
-            if (index == -1 || tries >= 3) return;
-            if (guessedName == correctPokemon.Name)
+            if (StatusMessage == "Well done!") return; 
+
+            var correct = gameService.Guess(guessedName);
+            Score = gameService.Score;
+
+            if (correct)
             {
-                ButtonStates[index].Color = "Green";
-                Score++;
-                gameActive = false;
-                foreach (var buttonState in ButtonStates)
-                {
-                    buttonState.IsEnabled = false;
-                }
+                RemainingTries--;
+                StatusMessage = "Well done!";
             }
             else
             {
-                ButtonStates[index].Color = "Red";
-                tries++;
-                if (tries >= 3)
+                RemainingTries--; 
+
+                if (!gameService.GameActive && gameService.ButtonStates.All(b => !b.IsEnabled))
                 {
-                    gameActive = false;
-                    foreach (var buttonState in ButtonStates)
-                    {
-                        buttonState.IsEnabled = false;
-                    }
+                    StatusMessage = "Out of luck!";
                 }
             }
         }
